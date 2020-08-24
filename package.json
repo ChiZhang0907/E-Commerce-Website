@@ -1,0 +1,23 @@
+{
+  "name": "e-commerce-website",
+  "version": "1.0.0",
+  "description": "e-commerce-website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChiZhang0907/E-Commerce-Website.git"
+  },
+  "author": "Chi Zhang",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChiZhang0907/E-Commerce-Website/issues"
+  },
+  "homepage": "https://github.com/ChiZhang0907/E-Commerce-Website#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.10.0"
+  }
+}
