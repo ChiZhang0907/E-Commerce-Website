@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import {Typography, Button, Form, message, Input, Icon} from 'antd'
 import FileUpload from '../../utils/FileUpload'
+import Axios from 'axios'
 
 const {Title} = Typography
 const {TextArea} = Input
@@ -14,7 +15,7 @@ const Continents = [
     {key:6, value: "Australia"},
 ]
 
-function UploadPage() {
+function UploadPage(props) {
 
     const [destinationValue, setDestinationValue] = useState("")
     const [descriptionValue, setDescriptionValue] = useState("")
@@ -42,6 +43,31 @@ function UploadPage() {
         setImages(newImages)
     }
 
+    const onSubmit = (event) => {
+        event.preventDefault()
+
+        if(!descriptionChange || !destinationValue || !priceValue || !continentValue || !Images)
+            return alert('Please fill all the fields')
+
+        const variables = {
+            writer: props.user.userData._id,
+            destination: destinationValue,
+            description: descriptionValue,
+            price: priceValue,
+            images: Images,
+            continents: continentValue
+        }
+
+        Axios.post('/api/products/uploadProduct', variables).then(response => {
+            if(response.data.success) {
+                alert('Product successfully released')
+                props.history.push('/')
+            } else {
+                alert('Failed to upload product')
+            }
+        })
+    }
+
     return (
         <div style={{maxWidth:'700px', margin:'2rem auto'}}>
             <div style={{textAlign: 'center', marginBottom: '2rem'}}>
@@ -50,7 +76,7 @@ function UploadPage() {
 
             <FileUpload refreshFunction={updateImages}></FileUpload>
 
-            <Form onSubmit>
+            <Form onSubmit={onSubmit}>
                 <br></br>
                 <br></br>
                 <label style={{fontFamily: '-moz-initial', fontWeight: 'bold'}}>Destination</label>
@@ -80,7 +106,7 @@ function UploadPage() {
                 
                 <br></br>
                 <br></br>
-                <Button style={{fontFamily: '-moz-initial', fontWeight: 'bold'}} onClick>Submit</Button>
+                    <Button style={{fontFamily: '-moz-initial', fontWeight: 'bold'}} onClick={onSubmit}>Submit</Button>
             </Form>
         </div>
     )

@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require("../models/User");
+const { Product } = require("../models/Product");
 const multer = require('multer')
 
 const { auth } = require("../middleware/auth");
@@ -32,6 +32,16 @@ router.post("/uploadImage", auth, (req, res) => {
         if(err)
             return res.json({success: false, err})
         return res.json({success: true, image: res.req.file.path, fileName: res.req.file.fieldname})
+    })
+});
+
+router.post("/uploadProduct", auth, (req, res) => {
+    const newProduct = new Product(req.body)
+
+    newProduct.save((err) => {
+        if(err)
+            return res.status(400).json({success: false, err})
+        return res.status(200).json({success: true})
     })
 });
 
