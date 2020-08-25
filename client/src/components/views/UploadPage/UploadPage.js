@@ -6,13 +6,12 @@ import Axios from 'axios'
 const {Title} = Typography
 const {TextArea} = Input
 
-const Continents = [
-    {key:1, value: "Africa"},
-    {key:2, value: "Europe"},
-    {key:3, value: "Asia"},
-    {key:4, value: "North America"},
-    {key:5, value: "South America"},
-    {key:6, value: "Australia"},
+const Categories = [
+    {key:1, value: "Cultural Trip"},
+    {key:2, value: "Modern City"},
+    {key:3, value: "Natural Scenery"},
+    {key:4, value: "Culinary Journey"},
+    {key:5, value: "Historical Landmark"}
 ]
 
 function UploadPage(props) {
@@ -20,7 +19,7 @@ function UploadPage(props) {
     const [destinationValue, setDestinationValue] = useState("")
     const [descriptionValue, setDescriptionValue] = useState("")
     const [priceValue, setPriceValue] = useState(0)
-    const [continentValue, setContinentValue] = useState(1)
+    const [categoryValue, setCategoryValue] = useState(1)
     const [Images, setImages] = useState([])
     
     const destinationChange = (event) => {
@@ -35,8 +34,8 @@ function UploadPage(props) {
         setPriceValue(event.currentTarget.value)
     } 
 
-    const continentChange = (event) => {
-        setContinentValue(event.currentTarget.value)
+    const categoryChange = (event) => {
+        setCategoryValue(event.currentTarget.value)
     } 
 
     const updateImages = (newImages) => {
@@ -46,7 +45,7 @@ function UploadPage(props) {
     const onSubmit = (event) => {
         event.preventDefault()
 
-        if(!descriptionChange || !destinationValue || !priceValue || !continentValue || !Images)
+        if(!descriptionValue || !destinationValue || !priceValue  || !Images)
             return alert('Please fill all the fields')
 
         const variables = {
@@ -55,7 +54,7 @@ function UploadPage(props) {
             description: descriptionValue,
             price: priceValue,
             images: Images,
-            continents: continentValue
+            category: categoryValue
         }
 
         Axios.post('/api/products/uploadProduct', variables).then(response => {
@@ -94,10 +93,10 @@ function UploadPage(props) {
                 
                 <br></br>
                 <br></br>
-                <label style={{fontFamily: '-moz-initial', fontWeight: 'bold'}}>Continent</label>
+                <label style={{fontFamily: '-moz-initial', fontWeight: 'bold'}}>Category</label>
                 <br></br>
-                <select onChange={continentChange} value={continentValue}>  
-                    {Continents.map(item => (
+                <select onChange={categoryChange} value={categoryValue}>  
+                    {Categories.map(item => (
                         <option key={item.key} value={item.key}>
                             {item.value}
                         </option>)
@@ -106,7 +105,7 @@ function UploadPage(props) {
                 
                 <br></br>
                 <br></br>
-                    <Button style={{fontFamily: '-moz-initial', fontWeight: 'bold'}} onClick={onSubmit}>Submit</Button>
+                <Button style={{fontFamily: '-moz-initial', fontWeight: 'bold'}} onClick={onSubmit}>Submit</Button>
             </Form>
         </div>
     )

@@ -27,11 +27,41 @@ var upload = multer({storage: storage}).single('file')
 //             Product
 //=================================
 
+router.post("/getProducts", (req, res) => {
+    
+    let order = req.body.order ? req.body.order : "desc"
+    let sortBy = req.body.order ? req.body.sortBy : "_id"
+    let limit = req.body.limit ? parseInt(req.body.limit) : 100
+    let skip = parseInt(req.body.skip)
+    let findArgs = {}
+
+    for(let key in req.body.filters) {
+        if(req.body.filters[key].length > 0) {
+            if(key === 'price') {
+
+            } else {
+                findArgs[key] = req.body.filters[key]
+            }
+        }
+    }
+
+    Product.find(findArgs)
+    .populate("writer")
+    .sort([[sortBy, order]])
+    .skip(skip)
+    .limit(limit)
+    .exec((err, products) => {
+        if(err)
+            return res.status(400).json({success: false, err})
+        res.status(200).json({success: true, products, postSize: products.length})
+    })
+});
+
 router.post("/uploadImage", auth, (req, res) => {
     upload(req, res, err => {
         if(err)
             return res.json({success: false, err})
-        return res.json({success: true, image: res.req.file.path, fileName: res.req.file.fieldname})
+        return res.status(201).json({success: true, image: res.req.file.path, fileName: res.req.file.fieldname})
     })
 });
 
@@ -41,7 +71,7 @@ router.post("/uploadProduct", auth, (req, res) => {
     newProduct.save((err) => {
         if(err)
             return res.status(400).json({success: false, err})
-        return res.status(200).json({success: true})
+        return res.status(201).json({success: true})
     })
 });
 
