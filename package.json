@@ -4,7 +4,11 @@
   "description": "e-commerce-website",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server/index.js",
+    "backend": "nodemon server/index.js",
+    "frontend": "npm run front --prefix client",
+    "dev": "concurrently \"npm run backend\" \"npm run start --prefix client\""
   },
   "repository": {
     "type": "git",
@@ -17,7 +21,21 @@
   },
   "homepage": "https://github.com/ChiZhang0907/E-Commerce-Website#readme",
   "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.18.3",
+    "cookie-parser": "^1.4.3",
+    "cors": "^2.8.5",
+    "debug": "^4.1.1",
     "express": "^4.17.1",
-    "mongoose": "^5.10.0"
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.27.0",
+    "mongoose": "^5.10.0",
+    "saslprep": "^1.0.3",
+    "supports-color": "^7.1.0"
+  },
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "http-proxy-middleware": "^1.0.5",
+    "nodemon": "^2.0.4"
   }
 }
