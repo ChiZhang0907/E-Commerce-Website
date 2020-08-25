@@ -6,7 +6,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
-const connectDataBase = require('./database/database');
+const connectDataBase = require('./config/database');
 
 connectDataBase();
 
