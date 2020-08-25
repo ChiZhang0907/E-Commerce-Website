@@ -20,6 +20,7 @@ function UploadPage() {
     const [descriptionValue, setDescriptionValue] = useState("")
     const [priceValue, setPriceValue] = useState(0)
     const [continentValue, setContinentValue] = useState(1)
+    const [Images, setImages] = useState([])
     
     const destinationChange = (event) => {
         setDestinationValue(event.currentTarget.value)
@@ -37,13 +38,17 @@ function UploadPage() {
         setContinentValue(event.currentTarget.value)
     } 
 
+    const updateImages = (newImages) => {
+        setImages(newImages)
+    }
+
     return (
         <div style={{maxWidth:'700px', margin:'2rem auto'}}>
             <div style={{textAlign: 'center', marginBottom: '2rem'}}>
                 <Title level={2}> Upload Travel Product </Title>
             </div>
 
-            <FileUpload></FileUpload>
+            <FileUpload refreshFunction={updateImages}></FileUpload>
 
             <Form onSubmit>
                 <br></br>
