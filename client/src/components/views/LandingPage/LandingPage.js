@@ -4,6 +4,7 @@ import Axios from 'axios'
 import ImageSlider from '../../utils/ImageSlider'
 import CheckBox from './Sections/CheckBox'
 import RadioBox from './Sections/RadioBox'
+import SearchBox from './Sections/SearchBox'
 import {categories, price} from './Sections/Data'
 
 const {Meta} = Card
@@ -14,6 +15,7 @@ function LandingPage() {
     const [skip, setSkip] = useState(0)
     const [limit, setLimit] = useState(8)
     const [postSize, setPostSize] = useState(0)
+    const [keyWord, setKeyWord] = useState("")
     const [Filters, setFilters] = useState({
         category: [],
         price: []
@@ -60,7 +62,7 @@ function LandingPage() {
         return (
             <Col lg={6} md={8} xs={24} key={index}>
                 <Card hoverable={true} cover={<ImageSlider images={product.images}/>}>
-                    <Meta title={product.destination} description={`$${product.price}`} style={{fontWeight: 'bold'}}>
+                    <Meta title={product.title} description={`$${product.price}`} style={{fontWeight: 'bold'}}>
                     </Meta>
                 </Card>
             </Col>
@@ -107,6 +109,21 @@ function LandingPage() {
         console.log(Filters)
     }
 
+    const updateKeyWord = (newKeyWord) => {
+        
+        var variables = {
+            skip: 0,
+            limit: limit,
+            filters: Filters,
+            keyWord: newKeyWord
+        }
+
+        setSkip(0)
+        setKeyWord(newKeyWord)
+        console.log(newKeyWord)
+        getProducts(variables)
+    }
+
     return (
         <div style={{width: '75%', margin:'3rem auto'}}>
             <div style={{textAlign: 'center'}}>
@@ -121,6 +138,10 @@ function LandingPage() {
                     <RadioBox list={price} handleFilters={filters => handleFilters(filters, "price")}></RadioBox>
                 </Col>
             </Row>
+
+            <div style={{display:'flex', justifyContent:'flex-end', margin:'1rem auto'}}>
+                <SearchBox refreshFunction={updateKeyWord}></SearchBox>
+            </div>
 
             <br></br>
             {products.length === 0 ? 

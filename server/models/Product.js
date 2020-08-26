@@ -7,7 +7,7 @@ const productSchema = mongoose.Schema({
         ref: 'User'
     },
 
-    destination: {
+    title: {
         type: String,
         maxlength: 50
     },
@@ -44,7 +44,15 @@ const productSchema = mongoose.Schema({
 
 }, {timestamps: true})
 
-
+productSchema.index({ 
+    destination:'text',
+    description: 'text',
+}, {
+    weights: {
+        destination: 5,
+        description: 1,
+    }
+})
 
 const Product = mongoose.model('Product', productSchema);
 

@@ -50,7 +50,7 @@ function UploadPage(props) {
 
         const variables = {
             writer: props.user.userData._id,
-            destination: destinationValue,
+            title: destinationValue,
             description: descriptionValue,
             price: priceValue,
             images: Images,
