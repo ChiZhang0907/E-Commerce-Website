@@ -4,6 +4,7 @@ import Axios from 'axios'
 import ImageSlider from '../../utils/ImageSlider'
 import CheckBox from './Sections/CheckBox'
 import RadioBox from './Sections/RadioBox'
+import {categories, price} from './Sections/Data'
 
 const {Meta} = Card
 
@@ -14,7 +15,7 @@ function LandingPage() {
     const [limit, setLimit] = useState(8)
     const [postSize, setPostSize] = useState(0)
     const [Filters, setFilters] = useState({
-        categories: [],
+        category: [],
         price: []
     })
 
@@ -46,6 +47,7 @@ function LandingPage() {
         const variables = {
             skip: newSkip,
             limit: limit,
+            filters: Filters,
             loadMore: true
         }
         
@@ -58,7 +60,7 @@ function LandingPage() {
         return (
             <Col lg={6} md={8} xs={24} key={index}>
                 <Card hoverable={true} cover={<ImageSlider images={product.images}/>}>
-                    <Meta title={product.destination} description={`$${product.price}`}>
+                    <Meta title={product.destination} description={`$${product.price}`} style={{fontWeight: 'bold'}}>
                     </Meta>
                 </Card>
             </Col>
@@ -66,7 +68,7 @@ function LandingPage() {
     })
 
     const showFilters = (filters) => {
-        const variables = {
+        var variables = {
             skip: 0,
             limit: limit,
             filters: filters
@@ -76,7 +78,18 @@ function LandingPage() {
         setSkip(0)
     }
 
-    const handlerPirce
+    const handlePrice = (value) => {
+        const data = price
+        let array = []
+
+        for(let key in data) {
+            if(data[key]._id === parseInt(value, 10))
+                array = data[key].array
+        }
+
+        console.log(array)
+        return array
+    }
 
     const handleFilters = (filters, category) => {
         const newFilters = {...Filters}
@@ -85,10 +98,13 @@ function LandingPage() {
 
         if(category === 'price') {
             let priceRange = handlePrice(filters)
+            newFilters[category] = priceRange
         }
-        
+
         showFilters(newFilters)
         setFilters(newFilters)
+
+        console.log(Filters)
     }
 
     return (
@@ -99,13 +115,14 @@ function LandingPage() {
 
             <Row gutter={[16, 16]}>
                 <Col lg={12} xs={24}>
-                    <CheckBox handleFilters={filters => handleFilters(filters, "category")}></CheckBox>
+                    <CheckBox list={categories} handleFilters={filters => handleFilters(filters, "category")}></CheckBox>
                 </Col>
                 <Col lg={12} xs={24}>
-                    <RadioBox handleFilters={filters => handleFilters(filters, "price")}></RadioBox>
+                    <RadioBox list={price} handleFilters={filters => handleFilters(filters, "price")}></RadioBox>
                 </Col>
             </Row>
 
+            <br></br>
             {products.length === 0 ? 
                 <div style={{display: 'flex', height: '300px', justifyContent: 'center', alignItems: 'center'}}>
                     <h2>Not post yet...</h2>
@@ -119,7 +136,7 @@ function LandingPage() {
             
             <br></br>
             <br></br>
-            {postSize >= limit && 
+            {postSize >= limit  &&
                 <div style={{display: 'flex', justifyContent: 'center'}}>
                     <Button style={{fontFamily: '-moz-initial', fontWeight: 'bold'}} onClick={loadMore}>Load More</Button>
                 </div>

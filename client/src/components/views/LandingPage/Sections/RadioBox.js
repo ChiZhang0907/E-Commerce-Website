@@ -2,16 +2,7 @@ import React, {useState} from 'react'
 import {Collapse, Radio} from 'antd'
 import { TabPaneProps } from 'antd/lib/tabs'
 
-const {Panel} = Collapse
-
-const price = [
-    {"_id": 0, "price": "Any", "array": []},
-    {"_id": 1, "price": "Under $100", "array": [0, 99]},
-    {"_id": 2, "price": "$100 to $199", "array": [100, 199]},
-    {"_id": 3, "price": "$200 to $249", "array": [200, 249]},
-    {"_id": 4, "price": "$250 to $299", "array": [250, 299]},
-    {"_id": 5, "price": "More than $300", "array": [300, 200000]},
-]
+const {Panel} = Collapse 
 
 function RadioBox(props) {
     
@@ -26,10 +17,10 @@ function RadioBox(props) {
     return (
         <div>
             <Collapse defaultActiveKey={['0']}>
-                <Panel header="Price" key="1" style={{fontFamily: '-moz-initial'}}>
+                <Panel header="Price" key="1" style={{fontFamily: 'Helvetica'}}>
                     <Radio.Group onChange={handlerChange} value={range}>
-                        {price.map((value) => (
-                            <Radio key={value._id} value={`${value._id}`}>{value.price}</Radio>
+                        {props.list.map((value) => (
+                            <Radio key={value._id} value={`${value._id}`} style={{fontFamily: 'Helvetica'}}>{value.price}</Radio>
                         ))}
                     </Radio.Group>
                 </Panel>
