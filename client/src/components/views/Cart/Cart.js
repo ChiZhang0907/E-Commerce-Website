@@ -1,7 +1,8 @@
 import React, {useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {getCartItems, removeCartItem} from '../../../_actions/user_actions'
+import {getCartItems, removeCartItem, onSuccessBuy} from '../../../_actions/user_actions'
 import CartCard from './Sections/CartCard'
+import Paypal from '../../utils/Paypal'
 import {Result, Empty} from 'antd'
 import Axios from 'axios'
 
@@ -39,6 +40,36 @@ function Cart (props) {
         )
     }
 
+    const transactionSuccess = (data) => {
+
+        const variables = {
+            cartDetail: props.user.cartDetail,
+            paymentData: data
+        }
+
+        Axios.post('/api/users/successBuy', variables).then(response => {
+            if(response.data.success) {
+                setShowSuccess(true)
+                setShowPrice(false)
+
+                dispatch(onSuccessBuy({
+                    cart: response.data.cart,
+                    cartDetail: response.data.cartDetail
+                }))
+            } else {
+                alert('Failed to pay')
+            }
+        })
+    }
+
+    const transactionError = () => {
+        console.log('Paypal Error')
+    }
+
+    const transactionCancled = () => {
+        console.log('Transaction Canceled')
+    }
+
     useEffect (() => {
         let cartItems = []
         if(props.user.userData && props.user.userData.cart) {
@@ -69,7 +100,13 @@ function Cart (props) {
                         <h2>Total amount: $ {price}</h2>
                     </div>
                     : showSuccess ? 
-                        <Result status="success" title="Successfully Purchased Items"></Result> :
+                        <div>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                        <Result status="success" title="Successfully Purchased Items" style={{fontFamily: 'Helvetica'}}></Result>
+                        </div> :
                         <div style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
                             <br></br>
                             <br></br>
@@ -87,6 +124,14 @@ function Cart (props) {
                 }
 
             </div>
+
+            {showPrice && <Paypal 
+                productPrice={price} 
+                onSuccess={transactionSuccess} 
+                transactionError={transactionError} 
+                transactionCancled={transactionCancled}/>
+            }
+
         </div>
     )
 }
