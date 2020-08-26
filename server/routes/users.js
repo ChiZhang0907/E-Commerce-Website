@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { User } = require("../models/User");
-
-const { auth } = require("../middleware/auth");
+const {User} = require("../models/User");
+const {Product}= require("../models/Product")
+const {auth} = require("../middleware/auth");
 
 //=================================
 //             User
@@ -76,7 +76,7 @@ router.post("/addToCart", auth, (req, res) => {
         let duplicate = false;
 
         userInfo.cart.forEach((item) => {
-            if (item.id == req.query.id) {
+            if (item.id == req.body.id) {
                 duplicate = true;
             }
         })
@@ -84,7 +84,7 @@ router.post("/addToCart", auth, (req, res) => {
 
         if (duplicate) {
             User.findOneAndUpdate(
-                { _id: req.user._id, "cart.id": req.query.id },
+                { _id: req.user._id, "cart.id": req.body.id },
                 { $inc: { "cart.$.quantity": 1 } },
                 { new: true },
                 (err, userInfo) => {
@@ -98,7 +98,7 @@ router.post("/addToCart", auth, (req, res) => {
                 {
                     $push: {
                         cart: {
-                            id: req.query.id,
+                            id: req.body.id,
                             quantity: 1,
                             date: Date.now()
                         }
@@ -112,6 +112,51 @@ router.post("/addToCart", auth, (req, res) => {
             )
         }
     })
+});
+
+
+router.post("/removeFromCart", auth, (req, res) => {
+    
+    User.findOneAndUpdate(
+        {_id: req.user._id},
+        {"$pull": {"cart": {"id": req.body.id}}},
+        {new: true},
+        (err, userInfo) => {
+            let cart = userInfo.cart;
+            let array = cart.map(item => {
+                return item.id
+            })
+
+            Product.find({'_id': {$in: array}})
+                .populate('writer')
+                .exec((err, cartDetail) => {
+                    return res.status(200).json({
+                        cartDetail,
+                        cart
+                    })
+                })
+        }
+    )
+});
+
+router.get("/cartInfo", auth, (req, res) => {
+    User.findOne(
+        {_id: req.user._id},
+        (err, userInfo) => {
+            let cart = userInfo.cart;
+            let array = cart.map(item => {
+                return item.id
+            })
+
+            Product.find({'_id': {$in: array}})
+                .populate('writer')
+                .exec((err, cartDetail) => {
+                    if (err) return res.status(400).send(err);
+                    return res.status(200).json({success: true, cartDetail, cart})
+                })
+
+        }
+    )
 });
 
 module.exports = router;

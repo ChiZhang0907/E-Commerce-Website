@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from 'react'
 import {useDispatch} from 'react-redux'
-import {getCartItems} from '../../../_actions/user_actions'
+import {getCartItems, removeCartItem} from '../../../_actions/user_actions'
 import CartCard from './Sections/CartCard'
 import {Result, Empty} from 'antd'
+import Axios from 'axios'
 
 function Cart (props) {
 
     const dispatch = useDispatch();
 
     const [price, setPrice] = useState(0)
+    const [showPrice, setShowPrice] = useState(false)
+    const [showSuccess, setShowSuccess] = useState(false)
 
     const calculatePrice = (cartDetail) => {
         let total = 0
@@ -18,6 +21,22 @@ function Cart (props) {
         })
 
         setPrice(total)
+        setShowPrice(true)
+    }
+
+    const removeFromCart = (productId) => {
+        dispatch(removeCartItem(productId)).then(
+            Axios.get('/api/users/cartInfo').then(response => {
+                if(response.data.success) {
+                    if(response.data.cartDetail.length <= 0)
+                        setShowPrice(false)
+                    else
+                        calculatePrice(response.data.cartDetail)
+                } else {
+                    alert('Failed to get cart info')
+                }
+            })
+        )
     }
 
     useEffect (() => {
@@ -40,22 +59,33 @@ function Cart (props) {
 
     return (
         <div style={{width: '85%', margin: '3rem auto'}}>
-            <h1>My Cart</h1>
+            {showPrice && <h1>My Cart</h1>}
             
             <div>
-                <CartCard products={props.user.cartDetail}></CartCard>
+                {showPrice && <CartCard products={props.user.cartDetail} removeItem={removeFromCart}></CartCard>}
 
-                <div style={{marginTop: '3rem'}}>
-                    <h2>Total amount: $ {price}</h2>
-                </div>
+                {showPrice ? 
+                    <div style={{marginTop: '3rem'}}>
+                        <h2>Total amount: $ {price}</h2>
+                    </div>
+                    : showSuccess ? 
+                        <Result status="success" title="Successfully Purchased Items"></Result> :
+                        <div style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <br></br>
+                            <center>
+                                <h1>No Items In the Cart</h1>
+                            </center>
+                            <Empty description={false}></Empty>
+                        </div>
+                }
 
-                <Result status="success" title="Successfully Purchased Items"></Result>
-
-                <div style={{width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-                    <br></br>
-                    <Empty description={false}></Empty>
-                    <p>No Items In the Cart</p>
-                </div>
             </div>
         </div>
     )

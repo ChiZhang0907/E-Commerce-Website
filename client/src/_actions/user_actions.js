@@ -5,7 +5,8 @@ import {
     AUTH_USER,
     LOGOUT_USER,
     ADD_TO_CART_USER,
-    GET_CART_ITEMS_USER
+    GET_CART_ITEMS_USER,
+    REMOVE_CART_ITEMS_USER
 } from './types';
 import { USER_SERVER } from '../components/Config.js';
 import { replace } from 'formik';
@@ -52,7 +53,11 @@ export function logoutUser(){
 }
 
 export function addToCart(_id) {
-    const request = axios.post(`${USER_SERVER}/addToCart?id=${_id}`).then(
+    const variable = {
+        id: _id
+    }
+
+    const request = axios.post(`${USER_SERVER}/addToCart`, variable).then(
         response => response.data
     )
 
@@ -76,6 +81,30 @@ export function getCartItems(cartItems, userCart) {
 
     return {
         type: GET_CART_ITEMS_USER,
+        payload: request
+    }
+}
+
+export function removeCartItem(_id) {
+    
+    const variable = {
+        id: _id
+    }
+
+    const request = axios.post(`${USER_SERVER}/removeFromCart`, variable).then(response => {
+        
+        response.data.cart.forEach(item => {
+            response.data.cartDetail.forEach((k, i) => {
+                if(item.id === k.id) {
+                    response.data.cartDetail[i].quantity = item.quantity
+                }
+            })
+        })
+        return response.data
+    })
+
+    return {
+        type: REMOVE_CART_ITEMS_USER,
         payload: request
     }
 }

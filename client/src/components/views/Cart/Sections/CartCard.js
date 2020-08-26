@@ -18,7 +18,7 @@ function CartCard (props) {
                 <td style={{fontFamily: 'Helvetica'}}>{product.quantity} EA</td>
                 <td style={{fontFamily: 'Helvetica'}}>$ {product.price} </td>
                 <td style={{fontFamily: 'Helvetica'}}>
-                    <button onClick>Remove</button> 
+                    <button onClick={() => props.removeItem(product._id)}>Remove</button> 
                 </td>
             </tr>
         ))
