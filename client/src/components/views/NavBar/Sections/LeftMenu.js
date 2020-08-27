@@ -7,6 +7,12 @@ function LeftMenu(props) {
       <Menu.Item key="mail">
         <a href="/" style={{fontWeight: 'bold'}}>Home</a>
       </Menu.Item>
+      <Menu.Item key="list">
+        <a href="/shoplist" style={{fontWeight: 'bold'}}>List</a>
+      </Menu.Item>
+      <Menu.Item key="recommendation">
+        <a href="/recommendation" style={{fontWeight: 'bold'}}>Recommendation</a>
+      </Menu.Item>
     </Menu>
   )
 }

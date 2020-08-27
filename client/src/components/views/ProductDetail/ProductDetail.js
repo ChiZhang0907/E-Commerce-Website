@@ -42,7 +42,7 @@ function ProductDetail (props) {
                     <ProductImage detail={product}></ProductImage>
                 </Col>
                 <Col lg={12} xs={24}>
-                    <ProductInfo detail={product} addToCart={handleAddToCart}></ProductInfo>
+                    <ProductInfo detail={product} pId={props.match.params.productId} addToCart={handleAddToCart}></ProductInfo>
                 </Col>
             </Row>
         </div>
