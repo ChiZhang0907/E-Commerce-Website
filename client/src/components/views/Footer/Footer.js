@@ -1,6 +1,5 @@
   
 import React from 'react'
-import {Icon} from 'antd';
 
 function Footer() {
     return (
@@ -9,7 +8,7 @@ function Footer() {
             flexDirection: 'column', alignItems: 'center',
             justifyContent: 'center', fontSize:'1rem'
         }}>
-           <p> Happy Coding  <Icon type="smile" /></p>
+           <p> E-Commerce Website © Chi Zhang</p>
         </div>
     )
 }

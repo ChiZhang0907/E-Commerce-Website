@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Axios from 'axios'
+import moment from 'moment'
 
 function History () {
     
@@ -28,7 +29,7 @@ function History () {
                         <th>Payment Id</th>
                         <th>Price</th>
                         <th>Quantity</th>
-                        <th>Date of Purchase</th>
+                        <th>Date</th>
                     </tr>
                 </thead>
 
@@ -37,9 +38,9 @@ function History () {
                     {history.map(item => (
                             <tr key={item.id}>
                                 <td>{item.id}</td>
-                                <td>{item.price}</td>
+                                <td>{`$ ${item.price}`}</td>
                                 <td>{item.quantity}</td>
-                                <td>{item.dateOfPurchase}</td>
+                                <td>{moment(item.dateOfPurchase).format("MM/DD/YYYY")}</td>
                             </tr>
                         ))}
 

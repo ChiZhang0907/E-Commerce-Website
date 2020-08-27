@@ -1,4 +1,5 @@
 import React from 'react'
+import {Button} from 'antd'
 
 function CartCard (props) {
    
@@ -18,7 +19,9 @@ function CartCard (props) {
                 <td style={{fontFamily: 'Helvetica'}}>{product.quantity} EA</td>
                 <td style={{fontFamily: 'Helvetica'}}>$ {product.price} </td>
                 <td style={{fontFamily: 'Helvetica'}}>
-                    <button onClick={() => props.removeItem(product._id)}>Remove</button> 
+                    <Button size="medium" shape="round" type="danger" onClick={() => props.removeItem(product._id)}>
+                        Remove
+                    </Button>
                 </td>
             </tr>
         ))
