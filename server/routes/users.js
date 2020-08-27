@@ -290,7 +290,6 @@ router.get("/listnumber", auth, (req, res) => {
 router.post("/shoplist", auth, (req, res) => {
     let limit = req.body.limit ? parseInt(req.body.limit) : 100
     let skip = parseInt(req.body.skip)
-    let newList = []
 
     Shoplist.find({"user": req.user._id})
     .exec((err, doc) => {
@@ -313,6 +312,60 @@ router.post("/shoplist", auth, (req, res) => {
         })
     })
 
+});
+
+router.get("/recommendation", auth, (req, res) => {
+    Shoplist.find({"user": req.user._id})
+    .exec((err, doc) => {
+        if(err) 
+            return res.status(400).send(err)
+        let categoryList = [
+            {category: 1, number: 0},
+            {category: 2, number: 0},
+            {category: 3, number: 0},
+            {category: 4, number: 0},
+            {category: 5, number: 0},
+        ]
+        
+        let newList = []
+        
+        doc.map((subscriber, index) => {
+            newList.push(subscriber.product)
+        })
+
+        Product.find({"_id": {$in: newList}})
+        .populate('writer')
+        .exec((err, products) => {
+            
+            products.map((item, index) => {
+                categoryList[item.category - 1].number++
+            })
+
+            let searchCategory = []
+
+            categoryList.map((item, index) => {
+                if(item.number !== 0)
+                    searchCategory.push(item.category)
+            })
+
+            const sortProduct = (a, b) => {
+                return categoryList[b.category - 1].number - categoryList[a.category - 1].number
+            }
+
+            Product.find({"category": {$in: searchCategory}, "_id": {$nin: newList}})
+            .populate('writer')
+            .exec((err, products) => {
+                if(err) {
+                    console.log(err)
+                    return res.status(400).send(err)
+                }
+                products.sort(sortProduct)
+                newProducts = products.slice(0, 8)
+                res.status(200).json({success: true, products: newProducts})
+            })
+
+        })
+    })
 });
 
 module.exports = router;
