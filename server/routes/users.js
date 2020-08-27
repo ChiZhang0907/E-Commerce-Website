@@ -3,8 +3,9 @@ const router = express.Router();
 const {User} = require("../models/User");
 const {Product} = require("../models/Product")
 const {Payment} = require("../models/Payment")
+const {Shoplist} = require("../models/Shoplist")
 const {auth} = require("../middleware/auth");
-const async = require('async')
+const async = require('async');
 
 //=================================
 //             User
@@ -238,6 +239,80 @@ router.get("/history", auth, (req, res) => {
             return res.status(200).json({success: true, history})
         }
     )
+});
+
+router.get("/productinlist", auth, (req, res) => {
+    Shoplist.find({"user": req.user._id, "product": req.query.id})
+    .exec((err, shoplist) => {
+        if(err) 
+            return res.status(400).send(err)
+        let result = false;
+        if(shoplist.length != 0)
+            result = true
+        res.status(200).json({success: true, productinlist: result})
+    })
+});
+
+router.post("/addtolist", auth, (req, res) => {
+    const listData = {
+        user: req.user._id,
+        product: req.body.id
+    }
+
+    const shoplist = new Shoplist(listData)
+
+    shoplist.save((err, doc) => {
+        if(err)
+            return res.json({success: false})
+        return res.status(200).json({success: true})
+    })
+});
+
+router.post("/removefromlist", auth, (req, res) => {
+    Shoplist.findOneAndDelete({user: req.user._id, product: req.body.id})
+    .exec((err, doc) => {
+        if(err)
+            return res.status(400).json({success: false, err});
+        res.status(200).json({success: true, doc})
+    })
+});
+
+router.get("/listnumber", auth, (req, res) => {
+    Shoplist.find({"product": req.query.id})
+    .exec((err, doc) => {
+        if(err)
+            return res.status(400).json({success: false, err});
+        let listnumber = doc.length
+        res.status(200).json({success: true, listnumber: listnumber})
+    })
+});
+
+router.post("/shoplist", auth, (req, res) => {
+    let limit = req.body.limit ? parseInt(req.body.limit) : 100
+    let skip = parseInt(req.body.skip)
+    let newList = []
+
+    Shoplist.find({"user": req.user._id})
+    .exec((err, doc) => {
+        if(err) 
+            return res.status(400).send(err)
+        let newList = []
+        
+        doc.map((subscriber, index) => {
+            newList.push(subscriber.product)
+        })
+
+        Product.find({"_id": {$in: newList}})
+        .populate('writer')
+        .skip(skip)
+        .limit(limit)
+        .exec((err, products) => {
+            if(err)
+                return res.status(400).send(err)
+            res.status(200).json({success: true, products, postSize: products.length})
+        })
+    })
+
 });
 
 module.exports = router;
