@@ -8,7 +8,7 @@ function Footer() {
             flexDirection: 'column', alignItems: 'center',
             justifyContent: 'center', fontSize:'1rem'
         }}>
-           <p> E-Commerce Website © Chi Zhang</p>
+           <p> Travle.com © Chi Zhang</p>
         </div>
     )
 }

@@ -30,6 +30,11 @@ function ProductInfo(props) {
             <br />
             <br />
             <div style={{ display: 'flex', justifyContent: 'center' }}>
+                <Button size="large" shape="round" type="danger" onClick>
+                    Add to List
+                </Button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <Button size="large" shape="round" type="danger" onClick={handleAddToCart}>
                     Add to Cart
                 </Button>
